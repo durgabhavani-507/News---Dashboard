@@ -16,6 +16,21 @@ export default function AdminDashboard() {
 
   const location = useLocation();
   const hash = location.hash;
+//added
+const [newNews, setNewNews] = useState({
+  title: "",
+  description: "",
+  image: "",
+  category: "",
+  date: "",
+});
+useEffect(() => {
+  getNews().then((data) => {
+    console.log("NEWS:", data);
+    setNewsList(data);
+  });
+}, []);
+
 
   useEffect(() => {
     const currentUser = auth.currentUser;
@@ -37,6 +52,21 @@ export default function AdminDashboard() {
     const data = await getNews();
     setNewsList(data || []);
   }
+//addes
+async function handleAddNews(e) {
+  e.preventDefault();
+
+  await addNews(newNews);   // 👈 ADD to MockAPI
+  loadNews();
+
+  setNewNews({
+    title: "",
+    description: "",
+    image: "",
+    category: "",
+    date: "",
+  });
+}
 
   /* ===== APPROVE / REJECT ===== */
   async function approveNews(index) {
@@ -171,8 +201,55 @@ export default function AdminDashboard() {
 
       {/* ===== PUBLISHED NEWS ===== */}
       {hash === "#published-news" && (
+
+        
         <>
           <h2>Published News</h2>
+{/* <form onSubmit={handleAddNews} className="add-news-form">
+  <h3>Add News</h3>
+
+  <input
+    placeholder="Title"
+    value={newNews.title}
+    onChange={(e) =>
+      setNewNews({ ...newNews, title: e.target.value })
+    }
+  />
+
+  <textarea
+    placeholder="Description"
+    value={newNews.description}
+    onChange={(e) =>
+      setNewNews({ ...newNews, description: e.target.value })
+    }
+  />
+
+  <input
+    placeholder="Image URL"
+    value={newNews.image}
+    onChange={(e) =>
+      setNewNews({ ...newNews, image: e.target.value })
+    }
+  />
+
+  <input
+    placeholder="Category"
+    value={newNews.category}
+    onChange={(e) =>
+      setNewNews({ ...newNews, category: e.target.value })
+    }
+  />
+
+  <input
+    type="date"
+    value={newNews.date}
+    onChange={(e) =>
+      setNewNews({ ...newNews, date: e.target.value })
+    }
+  /> */}
+{/* 
+  <button className="btn primary">Add News</button>
+</form> */}
 
           <div className="dashboard-grid">
             {currentNews.map((news) => (
