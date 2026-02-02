@@ -11,6 +11,8 @@ const PAGE_SIZE = 6;
 export default function UserDashboard() {
   const [newsList, setNewsList] = useState([]);
   const [page, setPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
@@ -63,14 +65,30 @@ export default function UserDashboard() {
     });
   }
 
-  const totalPages = Math.ceil(newsList.length / PAGE_SIZE);
-  const currentNews = newsList.slice(
-    (page - 1) * PAGE_SIZE,
-    page * PAGE_SIZE
-  );
+  // const totalPages = Math.ceil(newsList.length / PAGE_SIZE);
+  // const currentNews = newsList.slice(
+  //   (page - 1) * PAGE_SIZE,
+  //   page * PAGE_SIZE
+  // );
+
+  // 🔍 SEARCH FILTER
+const filteredNews = newsList.filter((news) =>
+  news.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  news.description?.toLowerCase().includes(searchTerm.toLowerCase())
+);
+
+const totalPages = Math.ceil(filteredNews.length / PAGE_SIZE);
+
+const currentNews = filteredNews.slice(
+  (page - 1) * PAGE_SIZE,
+  page * PAGE_SIZE
+);
+
 
   return (
-    <div className="page-container">
+    // <div className="page-container">
+    <div className="page-container user-dashboard">
+
       <Routes>
         {/* PROFILE */}
         {/* ✅ DEFAULT → USER PROFILE */}
@@ -165,6 +183,19 @@ export default function UserDashboard() {
             </form>
           }
         />
+        {/* <div className="search-wrapper">
+  <input
+    type="text"
+    placeholder="Search news by title or description..."
+    value={searchTerm}
+    onChange={(e) => {
+      setSearchTerm(e.target.value);
+      setPage(1);
+    }}
+    className="search-input"
+  />
+</div> */}
+
 
         {/* VIEW NEWS LIST */}
         <Route
@@ -172,6 +203,19 @@ export default function UserDashboard() {
           element={
             <>
               <div className="dashboard-center">
+                {/* 🔍 SEARCH BAR */}
+        <div className="search-wrapper">
+          <input
+            type="text"
+            placeholder="Search news by title or description..."
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setPage(1);
+            }}
+            className="search-input"
+          />
+        </div>
                 <div className="dashboard-grid">
                   {currentNews.map((news) => (
                     <div className="dashboard-card" key={news.id}>

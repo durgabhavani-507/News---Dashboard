@@ -75,6 +75,7 @@ const getTitle = () => {
 
         {/* NAV */}
         <nav className="nav-links">
+{/* <nav className={`nav-links ${menuOpen ? "open" : ""}`}> */}
 
           {/* ================= BEFORE LOGIN ================= */}
           {!role && (

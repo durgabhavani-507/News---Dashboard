@@ -11,8 +11,11 @@ export default function AdminDashboard() {
   const [newsList, setNewsList] = useState([]);
   const [contactMessages, setContactMessages] = useState([]);
   const [pendingNews, setPendingNews] = useState([]);
+  
   const [page, setPage] = useState(1);
   const [editingNews, setEditingNews] = useState(null);
+const [searchTerm, setSearchTerm] = useState("");
+
 
   const location = useLocation();
   const hash = location.hash;
@@ -86,14 +89,30 @@ async function handleAddNews(e) {
     localStorage.setItem("pendingNews", JSON.stringify(updated));
   }
 
+  // function deleteContact(index) {
+  //   const updated = contactMessages.filter((_, i) => i !== index);
+  //   setContactMessages(updated);
+  //   localStorage.setItem("contactMessages", JSON.stringify(updated));
+  // }
   function deleteContact(index) {
-    const updated = contactMessages.filter((_, i) => i !== index);
-    setContactMessages(updated);
-    localStorage.setItem("contactMessages", JSON.stringify(updated));
-  }
+  if (!window.confirm("Are you sure you want to delete this message?")) return;
 
-  const totalPages = Math.ceil(newsList.length / PAGE_SIZE);
-  const currentNews = newsList.slice(
+  const updated = contactMessages.filter((_, i) => i !== index);
+  setContactMessages(updated);
+  localStorage.setItem("contactMessages", JSON.stringify(updated));
+
+  alert("Contact message deleted successfully ✅");
+}
+
+// 🔍 SEARCH FILTER
+const filteredNews = newsList.filter((news) =>
+  news.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  news.description?.toLowerCase().includes(searchTerm.toLowerCase())
+);
+const totalPages = Math.ceil(filteredNews.length / PAGE_SIZE);
+  // const totalPages = Math.ceil(newsList.length / PAGE_SIZE);
+  // const currentNews = newsList.slice(
+  const currentNews = filteredNews.slice(
     (page - 1) * PAGE_SIZE,
     page * PAGE_SIZE
   );
@@ -205,6 +224,18 @@ async function handleAddNews(e) {
         
         <>
           <h2>Published News</h2>
+
+          <input
+  type="text"
+  placeholder="Search news by title or description..."
+  value={searchTerm}
+  onChange={(e) => {
+    setSearchTerm(e.target.value);
+    setPage(1); // reset to first page on search
+  }}
+  className="search-input"
+/>
+
 {/* <form onSubmit={handleAddNews} className="add-news-form">
   <h3>Add News</h3>
 
